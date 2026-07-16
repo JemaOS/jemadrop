@@ -439,7 +439,7 @@ class I18n {
         this.i18n_ = domI18n({
             selector: '[data-translatable]',
             separator: ' // ',
-            languages: ['fr', 'en'],
+            languages: ['fr', 'fr-FR', 'en', 'en-US'],
             currentLanguage: 'fr',
         });
         this._showDom();

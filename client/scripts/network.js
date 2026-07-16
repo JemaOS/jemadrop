@@ -538,6 +538,6 @@ class Events {
 
 RTCPeer.config = {
     'iceServers': [{
-        urls: 'stun:<stun-server>:<port>',
+        urls: 'stun:stun.l.google.com:19302',
     }],
 };
