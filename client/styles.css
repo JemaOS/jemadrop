@@ -291,7 +291,18 @@ x-peer[transfer] .status:before {
 }
 
 x-peer x-icon {
-    animation: pop 600ms ease-out 1;
+    animation: breathe 2.5s ease-in-out infinite;
+}
+
+@keyframes breathe {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(90, 99, 233, 0.4);
+    }
+    50% {
+        transform: scale(1.08);
+        box-shadow: 0 0 0 12px rgba(90, 99, 233, 0);
+    }
 }
 
 @keyframes pop {
