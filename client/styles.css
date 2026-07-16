@@ -469,6 +469,7 @@ x-dialog a {
     touch-action: manipulation;
     border: none;
     outline: none;
+    background: transparent;
 }
 
 .button:before,

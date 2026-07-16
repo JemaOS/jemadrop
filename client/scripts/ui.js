@@ -523,8 +523,11 @@ class I18n {
     _setupLangButton() {
         const langBtn = document.getElementById('lang-btn');
         if (!langBtn) return;
+
+        const normalizeLang = (lang) => lang.startsWith('en') ? 'en' : 'fr';
+
         langBtn.addEventListener('click', () => {
-            const current = this.i18n_.getLanguage();
+            const current = normalizeLang(this.i18n_.getLanguage());
             const next = current === 'fr' ? 'en' : 'fr';
             this.i18n_.changeLanguage(next);
             window.lang = next;
@@ -533,7 +536,7 @@ class I18n {
             document.title = document.title;
         });
         // Set initial button label based on default language
-        langBtn.textContent = this.i18n_.getLanguage() === 'fr' ? 'EN' : 'FR';
+        langBtn.textContent = normalizeLang(this.i18n_.getLanguage()) === 'fr' ? 'EN' : 'FR';
     }
 }
 
