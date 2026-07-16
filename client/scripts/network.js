@@ -537,7 +537,14 @@ class Events {
 }
 
 RTCPeer.config = {
-    'iceServers': [{
-        urls: 'stun:stun.l.google.com:19302',
-    }],
+    'iceServers': [
+        {
+            urls: 'stun:stun.l.google.com:19302',
+        },
+        {
+            urls: 'turn:62.210.39.166:3478',
+            username: 'jemauser',
+            credential: 'tAnYj7uASjutRyNpSl//R/6PZ6Doqh+PDrldDsYPNPA='
+        }
+    ],
 };
