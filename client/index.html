@@ -5,8 +5,8 @@
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <!-- Web App Config -->
-    <title>燧炻传送 | JemaDrop</title>
-    <meta name="description" content="Transfer files across devices in JemaOS">
+    <title>JemaDrop</title>
+    <meta name="description" content="Transférez des fichiers entre vos appareils JemaOS">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#fafafa">
     <meta name="apple-mobile-web-app-capable" content="no">
@@ -21,49 +21,51 @@
 
 <body translate="no" style="visibility:hidden">
     <header class="row-reverse">
-        <a href="#about" class="icon-button" title="About JemaDrop">
+        <img src="images/jema-symbol.png" alt="JemaOS" class="logo-header" style="position: absolute; left: 16px; top: 12px;">
+        <a href="#about" class="icon-button" title="À propos de JemaDrop">
             <svg class="icon">
                 <use xlink:href="#info-outline" />
             </svg>
         </a>
-        <a href="/" class="icon-button" title="Reload device">
+        <a href="/" class="icon-button" title="Recharger l'appareil">
             <svg class="icon">
                 <use xlink:href="#reload-device" />
             </svg>
         </a>
-        <a href="#" id="notification" class="icon-button" title="Enable Notifications" hidden>
+        <a href="#" id="notification" class="icon-button" title="Activer les notifications" hidden>
             <svg class="icon">
                 <use xlink:href="#notifications" />
             </svg>
         </a>
-        <a href="#" id="install" class="icon-button" title="Install JemaDrop" hidden>
+        <a href="#" id="install" class="icon-button" title="Installer JemaDrop" hidden>
             <svg class="icon">
                 <use xlink:href="#homescreen" />
             </svg>
         </a>
+        <button id="lang-btn" type="button" title="Changer de langue">EN</button>
     </header>
     <!-- Peers -->
     <x-peers class="center"></x-peers>
     <x-no-peers>
-        <h2 data-translatable>JemaDrop // 燧炻传送</h2>
+        <h2 data-translatable>JemaDrop // JemaDrop</h2>
         <div class="font-subheading" data-translatable>
+            <span>Visitez <b>drop.jemaos.com</b> ou scannez ce <qrcode class="tooltip">QR code</qrcode> sur vos autres appareils pour envoyer des fichiers.</span>
             <span>Visit <b>drop.jemaos.com</b> or scan this <qrcode class="tooltip">QR code</qrcode> on other devices to send files.</span>
-            <span>在其它设备上访问 <b>drop.jemaos.com</b> 或扫描此<qrcode class="tooltip">二维码</qrcode>开始传送文件。</span>
         </div>
     </x-no-peers>
     <footer class="column">
-        <div class="font-body2" data-translatable>Share files with people in the same network. // 您可与同一网络下的用户共享文件。</div>
+        <div class="font-body2" data-translatable>Partagez des fichiers avec les personnes sur le même réseau. // Share files with people in the same network.</div>
     </footer>
     <!-- Receive Dialog -->
     <x-dialog id="receiveDialog">
         <x-background class="full center">
             <x-paper shadow="2">
-                <h3 data-translatable>File Received // 收到文件</h3>
-                <div class="font-subheading" id="fileName" data-translatable>Filename // 文件名</div>
+                <h3 data-translatable>Fichier reçu // File Received</h3>
+                <div class="font-subheading" id="fileName" data-translatable>Nom du fichier // Filename</div>
                 <div class="font-body2" id="fileSize"></div>
                 <div class="row-reverse">
-                    <a class="button" close id="download" title="Save File" autofocus data-translatable>Save // 保存</a>
-                    <button class="button" close data-translatable>Ignore // 忽略</button>
+                    <a class="button" close id="download" title="Enregistrer le fichier" autofocus data-translatable>Enregistrer // Save</a>
+                    <button class="button" close data-translatable>Ignorer // Ignore</button>
                 </div>
             </x-paper>
         </x-background>
@@ -73,11 +75,11 @@
         <form action="#">
             <x-background class="full center">
                 <x-paper shadow="2">
-                    <h3 data-translatable>Send a Message // 发送消息</h3>
+                    <h3 data-translatable>Envoyer un message // Send a Message</h3>
                     <input id="textInput" autocomplete="off" autofocus>
                     <div class="row-reverse">
-                        <button class="button" type="submit" close data-translatable>Send // 发送</button>
-                        <a class="button" close data-translatable>Cancel // 取消</a>
+                        <button class="button" type="submit" close data-translatable>Envoyer // Send</button>
+                        <a class="button" close data-translatable>Annuler // Cancel</a>
                     </div>
                 </x-paper>
             </x-background>
@@ -87,18 +89,18 @@
     <x-dialog id="receiveTextDialog">
         <x-background class="full center">
             <x-paper shadow="2">
-                <h3 data-translatable>Message Received // 收到消息</h3>
+                <h3 data-translatable>Message reçu // Message Received</h3>
                 <div class="font-subheading" id="text"></div>
                 <div class="row-reverse">
-                    <button class="button" id="copy" close autofocus data-translatable>Copy // 复制</button>
-                    <button class="button" close data-translatable>Ignore // 忽略</button>
+                    <button class="button" id="copy" close autofocus data-translatable>Copier // Copy</button>
+                    <button class="button" close data-translatable>Ignorer // Ignore</button>
                 </div>
             </x-paper>
         </x-background>
     </x-dialog>
     <!-- Toast -->
     <div class="toast-container full center">
-        <x-toast class="row" shadow="1" id="toast" data-translatable>File Transfer Completed // 文件传送完毕</x-toast>
+        <x-toast class="row" shadow="1" id="toast" data-translatable>Transfert terminé // File Transfer Completed</x-toast>
     </div>
     <!-- Modal -->
     <div class="modal-container" id="modal" shadow="1">
@@ -115,10 +117,10 @@
                     </svg>
                 </a>
             </header>
-            <h1 data-translatable>JemaDrop // 燧炻传送</h1>
-            <div class="font-subheading" data-translatable>Transfer files across devices in JemaOS // JemaOS 中的跨设备文件传输</div>
-            <div class="font-body2 instruction" data-translatable>JemaDrop lets you transfer files between P2P connection. It supposed that your devices have the same public IP address and are not using a proxy, network tunnel or VPN. // “燧炻传送” 可让您通过 P2P 连接传输文件。使用条件是您的设备处于同一公网 IP 地址，且没有使用代理、隧道或 VPN 等程序。</div>
-            <div class="font-body2">JemaDrop is made possible by <a href="https://github.com/RobinLinus">RobinLinus</a> and <a href="https://github.com/RobinLinus/snapdrop">Snapdrop</a></div>
+            <h1 data-translatable>JemaDrop // JemaDrop</h1>
+            <div class="font-subheading" data-translatable>Transférez des fichiers entre vos appareils JemaOS // Transfer files across devices in JemaOS</div>
+            <div class="font-body2 instruction" data-translatable>JemaDrop vous permet de transférer des fichiers via une connexion P2P. Vos appareils doivent partager la même adresse IP publique et ne pas utiliser de proxy, tunnel ou VPN. // JemaDrop lets you transfer files between P2P connection. It supposed that your devices have the same public IP address and are not using a proxy, network tunnel or VPN.</div>
+            <div class="font-body2">JemaDrop est basé sur <a href="https://github.com/RobinLinus">RobinLinus</a> et <a href="https://github.com/RobinLinus/snapdrop">Snapdrop</a></div>
         </section>
         <x-background></x-background>
     </x-about>
@@ -167,8 +169,8 @@
     <!-- no script -->
     <noscript>
         <x-noscript class="full center column">
-            <h1>Enable Javascript</h1>
-            <h3>JemaDrop works only with Javascript.</h3>
+            <h1>Activez Javascript</h1>
+            <h3>JemaDrop fonctionne uniquement avec Javascript.</h3>
         </x-noscript>
         <style>
         x-noscript {

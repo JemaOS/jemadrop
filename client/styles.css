@@ -2,7 +2,7 @@
 
 :root {
     --icon-size: 24px;
-    --primary-color: #e54d54;
+    --primary-color: #5a63e9;
     --secondary-color: #bfbfbf;
     --peer-width: 160px;
 }
@@ -166,8 +166,34 @@ a {
 
 /* Main Header */
 
-body>header a {
+body>header a,
+body>header button {
     margin-left: 8px;
+}
+
+.logo-header {
+    height: 32px;
+    width: auto;
+    margin-right: auto;
+    margin-left: 0;
+}
+
+#lang-btn {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--primary-color);
+    background: transparent;
+    border: 1px solid var(--primary-color);
+    border-radius: 4px;
+    padding: 4px 10px;
+    cursor: pointer;
+    min-width: 40px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 32px;
+    box-sizing: border-box;
 }
 
 

@@ -1,7 +1,7 @@
 {
     "name": "JemaDrop",
     "short_name": "JemaDrop",
-    "description": "Transfer files across devices in JemaOS",
+    "description": "Transférez des fichiers entre vos appareils JemaOS",
     "icons": [{
         "src": "images/icon-default.png",
         "sizes": "192x192",

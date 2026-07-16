@@ -439,11 +439,12 @@ class I18n {
         this.i18n_ = domI18n({
             selector: '[data-translatable]',
             separator: ' // ',
-            languages: ['en', 'zh'],
-            defaultLanguage: 'en',
+            languages: ['fr', 'en'],
+            defaultLanguage: 'fr',
         });
         this._showDom();
         this._createI18nStrings();
+        this._setupLangButton();
     }
 
     _showDom() {
@@ -453,18 +454,29 @@ class I18n {
     _createI18nStrings() {
         window.lang = this.i18n_.getLanguage();
         window.i18nNetwork = {
+            fr: {
+                CONNECTION_LOST_RETRY: 'Connexion perdue. Nouvelle tentative...',
+                TRANSFER_COMPLETED: 'Transfert de fichier terminé.',
+                PPER_CONNECTION_CLOSED_RELOAD: 'La connexion avec les appareils a été fermée. En attente de rechargement...',
+            },
             en: {
                 CONNECTION_LOST_RETRY: 'Connection lost. Retrying...',
                 TRANSFER_COMPLETED: 'File transfer completed.',
                 PPER_CONNECTION_CLOSED_RELOAD: 'Peers connection was closed. Waiting for reloading...',
             },
-            zh: {
-                CONNECTION_LOST_RETRY: '连接断开，正在重试…',
-                TRANSFER_COMPLETED: '文件传送完毕。',
-                PPER_CONNECTION_CLOSED_RELOAD: '设备连接中断，等待刷新…',
-            },
         };
         window.i18nUI = {
+            fr: {
+                COPY_TO_CLIPBOARD: 'Copié dans le presse-papiers.',
+                USER_OFFLINE: 'Vous êtes hors ligne.',
+                USER_ONLINE: 'Vous êtes de retour en ligne.',
+                CHANNEL_STATUS_OPENING: 'Connexion...',
+                CHANNEL_STATUS_OPENED: 'Prêt',
+                CHANNEL_STATUS_CLOSED: 'Fermé',
+                TIP_BROWSER_IN_APP: 'Le navigateur intégré de certaines applications peut bloquer les téléchargements. Il est recommandé d\'utiliser JemaDrop dans le navigateur système.',
+                TIP_AUTO_UPDATE: 'Une mise à jour est disponible et sera appliquée au prochain lancement.',
+                TIP_CONNECTION_PENDING: 'Connexion en cours... Si cela prend plus de temps que d\'habitude, vérifiez votre connexion réseau et fermez tout proxy, tunnel ou VPN.',
+            },
             en: {
                 COPY_TO_CLIPBOARD: 'Copied to clipboard.',
                 USER_OFFLINE: 'You are offline.',
@@ -476,18 +488,23 @@ class I18n {
                 TIP_AUTO_UPDATE: 'Update is available and it will be applied after the next launch.',
                 TIP_CONNECTION_PENDING: 'Connecting... If this takes longer than usual, please check your network connection and shutdown all proxy, network tunnel or VPN processes.',
             },
-            zh: {
-                COPY_TO_CLIPBOARD: '已复制到剪切板。',
-                USER_OFFLINE: '设备处于离线。',
-                USER_ONLINE: '设备恢复在线。',
-                CHANNEL_STATUS_OPENING: '连接中…',
-                CHANNEL_STATUS_OPENED: '就绪',
-                CHANNEL_STATUS_CLOSED: '已断开',
-                TIP_BROWSER_IN_APP: '在某些应用的内置浏览器里可能会无法下载文件，建议您在系统浏览器中使用“燧炻传送”。',
-                TIP_AUTO_UPDATE: '有更新可用，在应用下次启动时会自动生效。',
-                TIP_CONNECTION_PENDING: '连接中… 如等待时间过长，请确认您的设备网络连接，并关闭一切代理、隧道或 VPN 等程序。',
-            },
         };
+    }
+
+    _setupLangButton() {
+        const langBtn = document.getElementById('lang-btn');
+        if (!langBtn) return;
+        langBtn.addEventListener('click', () => {
+            const current = this.i18n_.getLanguage();
+            const next = current === 'fr' ? 'en' : 'fr';
+            this.i18n_.changeLanguage(next);
+            window.lang = next;
+            langBtn.textContent = next === 'fr' ? 'EN' : 'FR';
+            // Refresh dynamic UI strings that are not handled by dom-i18n
+            document.title = document.title;
+        });
+        // Set initial button label based on default language
+        langBtn.textContent = this.i18n_.getLanguage() === 'fr' ? 'EN' : 'FR';
     }
 }
 
