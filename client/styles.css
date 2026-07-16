@@ -583,7 +583,6 @@ input {
     clip: rect(0px, 40px, 80px, 0px);
     will-change: transform;
     transform: var(--progress);
-    animation: spin-continuous 1.5s linear infinite;
 }
 
 .over50 {
