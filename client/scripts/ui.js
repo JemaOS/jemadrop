@@ -444,6 +444,7 @@ class I18n {
         });
         this._showDom();
         this._createI18nStrings();
+        this._setupThemeButton();
         this._setupLangButton();
     }
 
@@ -489,6 +490,33 @@ class I18n {
                 TIP_CONNECTION_PENDING: 'Connecting... If this takes longer than usual, please check your network connection and shutdown all proxy, network tunnel or VPN processes.',
             },
         };
+    }
+
+
+    _setupThemeButton() {
+        const themeBtn = document.getElementById('theme-btn');
+        if (!themeBtn) return;
+
+        const applyTheme = (dark) => {
+            if (dark) {
+                document.body.classList.add('dark');
+                document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#12121a');
+            } else {
+                document.body.classList.remove('dark');
+                document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#fafafa');
+            }
+        };
+
+        const saved = localStorage.getItem('jemadrop-theme');
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const isDark = saved ? saved === 'dark' : prefersDark;
+        applyTheme(isDark);
+
+        themeBtn.addEventListener('click', () => {
+            const next = !document.body.classList.contains('dark');
+            applyTheme(next);
+            localStorage.setItem('jemadrop-theme', next ? 'dark' : 'light');
+        });
     }
 
     _setupLangButton() {

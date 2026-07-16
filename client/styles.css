@@ -5,6 +5,22 @@
     --primary-color: #5a63e9;
     --secondary-color: #bfbfbf;
     --peer-width: 160px;
+    --bg-color: #fafafa;
+    --text-color: #333;
+    --surface-color: #ffffff;
+    --surface-text-color: #ffffff;
+    --input-bg: #f1f3f4;
+    --border-color: rgba(0, 0, 0, 0.1);
+}
+
+body.dark {
+    --bg-color: #12121a;
+    --text-color: #f0f0f5;
+    --surface-color: #1e1f2b;
+    --surface-text-color: #ffffff;
+    --input-bg: #2a2b36;
+    --border-color: rgba(255, 255, 255, 0.1);
+    --secondary-color: #6b6b7b;
 }
 
 
@@ -78,9 +94,9 @@ header {
 /* Typography */
 
 body {
-    background: #fafafa;
+    background: var(--bg-color);
     font-family: -apple-system, BlinkMacSystemFont, Roboto, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    color: #333;
+    color: var(--text-color);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
@@ -163,6 +179,25 @@ a {
     }
 }
 
+
+
+/* Theme toggle */
+
+#theme-btn .moon {
+    display: block;
+}
+
+#theme-btn .sun {
+    display: none;
+}
+
+body.dark #theme-btn .moon {
+    display: none;
+}
+
+body.dark #theme-btn .sun {
+    display: block;
+}
 
 /* Main Header */
 
@@ -359,7 +394,7 @@ x-dialog x-background {
 
 x-dialog x-paper {
     z-index: 3;
-    background: white;
+    background: var(--surface-color);
     border-radius: 8px;
     padding: 16px 24px;
     width: 100%;
@@ -488,7 +523,7 @@ input {
     border: none;
     outline: none;
     padding: 16px 24px;
-    background: #f1f3f4;
+    background: var(--input-bg);
     border-radius: 50px;
     margin: 8px 0;
     line-height: 16px;
@@ -499,7 +534,7 @@ input {
 /* Info Animation */
 
 #about {
-    color: white;
+    color: var(--surface-text-color);
     z-index: 11;
     overflow: hidden;
     pointer-events: none;
