@@ -440,7 +440,7 @@ class I18n {
             selector: '[data-translatable]',
             separator: ' // ',
             languages: ['fr', 'en'],
-            defaultLanguage: 'fr',
+            currentLanguage: 'fr',
         });
         this._showDom();
         this._createI18nStrings();
