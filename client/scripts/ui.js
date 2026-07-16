@@ -429,23 +429,56 @@ class WebShareTargetUI {
     }
 }
 
-// i18n hack for html and js
-// https://github.com/ruyadorno/dom-i18n/blob/master/dist/dom-i18n.min.js
-// Return an addition function `getLanguage`
-!function(a,b){"use strict";"function"==typeof define&&define.amd?define([],function(){return a.domI18n=b()}):"object"==typeof exports?module.exports=b():a.domI18n=b()}(this,function(){"use strict";return function(a){function b(a){return a||(a=window.navigator.languages?window.navigator.languages[0]:window.navigator.language||window.navigator.userLanguage),-1===q.indexOf(a)&&(r&&console.warn(a+" is not available on the list of languages provided"),a=a.indexOf("-")?a.split("-")[0]:a),-1===q.indexOf(a)&&(r&&console.error(a+" is not compatible with any language provided"),a=p),a}function c(a){v=b(a),l()}function d(){u={}}function e(a){var b=a.getAttribute("data-dom-i18n-id");return b&&u&&u[b]}function f(a,b){var c="i18n"+Date.now()+1e3*Math.random();a.setAttribute("data-dom-i18n-id",c),u[c]=b}function g(a){return u&&u[a.getAttribute("data-dom-i18n-id")]}function h(a,b){var c={},d=a.firstElementChild,e=!d&&a[b].split(o);return q.forEach(function(b,f){var g;d?(g=a.children[f],g&&g.cloneNode&&(c[b]=g.cloneNode(!0))):(g=e[f],g&&(c[b]=String(g)))}),c}function i(a){var b,c,d=a.getAttribute(t),i=null!==a.getAttribute(s),k=d?d:"textContent";!i&&e(a)?b=g(a):(b=h(a,k),i||f(a,b)),c=b[v],"string"==typeof c?a[k]=c:"object"==typeof c&&j(a,c)}function j(a,b){k(a),a.appendChild(b)}function k(a){for(;a.lastChild;)a.removeChild(a.lastChild)}function l(){for(var a="string"==typeof n||n instanceof String?m.querySelectorAll(n):n,b=0;b<a.length;++b)i(a[b])}a=a||{};var m=a.rootElement||window.document,n=a.selector||"[data-translatable]",o=a.separator||" // ",p=a.defaultLanguage||"en",q=a.languages||["en"],r=void 0!==a.enableLog?a.enableLog:!0,s="data-no-cache",t="data-translatable-attr",u={},v=b(a.currentLanguage);return l(n),{getLanguage:b,changeLanguage:c,clearCachedElements:d}}});
 
 class I18n {
     constructor() {
-        this.i18n_ = domI18n({
-            selector: '[data-translatable]',
-            separator: ' // ',
-            languages: ['fr', 'en'],
-            currentLanguage: navigator.language.startsWith('en') ? 'en' : 'fr',
-        });
+        this.currentLanguage = navigator.language.startsWith('en') ? 'en' : 'fr';
+        this.languages = ['fr', 'en'];
+        this._cacheTranslations();
+        this.translate(this.currentLanguage);
         this._showDom();
         this._createI18nStrings();
         this._setupThemeButton();
         this._setupLangButton();
+    }
+
+    _cacheTranslations() {
+        this.translations = new Map();
+        document.querySelectorAll('[data-translatable]').forEach(el => {
+            const attr = el.getAttribute('data-translatable-attr') || 'textContent';
+            if (el.children.length > 0) {
+                // Store clones of children for each language
+                this.translations.set(el, {
+                    type: 'children',
+                    children: Array.from(el.children).map(c => c.cloneNode(true))
+                });
+            } else {
+                // Store split text
+                this.translations.set(el, {
+                    type: 'text',
+                    attr: attr,
+                    parts: el[attr].split(' // ')
+                });
+            }
+        });
+    }
+
+    translate(lang) {
+        if (!this.languages.includes(lang)) return;
+        const index = this.languages.indexOf(lang);
+        this.currentLanguage = lang;
+        this.translations.forEach((data, el) => {
+            if (data.type === 'children') {
+                if (data.children[index]) {
+                    el.innerHTML = '';
+                    el.appendChild(data.children[index].cloneNode(true));
+                }
+            } else {
+                if (data.parts[index]) {
+                    el[data.attr] = data.parts[index];
+                }
+            }
+        });
     }
 
     _showDom() {
@@ -524,19 +557,15 @@ class I18n {
         const langBtn = document.getElementById('lang-btn');
         if (!langBtn) return;
 
-        const normalizeLang = (lang) => lang.startsWith('en') ? 'en' : 'fr';
-
         langBtn.addEventListener('click', () => {
-            const current = normalizeLang(this.i18n_.getLanguage());
-            const next = current === 'fr' ? 'en' : 'fr';
-            this.i18n_.changeLanguage(next);
+            const next = this.currentLanguage === 'fr' ? 'en' : 'fr';
+            this.translate(next);
             window.lang = next;
             langBtn.textContent = next === 'fr' ? 'EN' : 'FR';
-            // Refresh dynamic UI strings that are not handled by dom-i18n
             document.title = document.title;
         });
         // Set initial button label based on default language
-        langBtn.textContent = normalizeLang(this.i18n_.getLanguage()) === 'fr' ? 'EN' : 'FR';
+        langBtn.textContent = this.currentLanguage === 'fr' ? 'EN' : 'FR';
     }
 }
 
