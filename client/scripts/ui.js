@@ -453,7 +453,8 @@ class I18n {
     }
 
     _createI18nStrings() {
-        window.lang = this.i18n_.getLanguage();
+        const rawLang = this.i18n_.getLanguage();
+        window.lang = rawLang.startsWith('en') ? 'en' : 'fr';
         window.i18nNetwork = {
             fr: {
                 CONNECTION_LOST_RETRY: 'Connexion perdue. Nouvelle tentative...',
