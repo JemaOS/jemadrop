@@ -486,7 +486,7 @@ class I18n {
     }
 
     _createI18nStrings() {
-        const rawLang = this.i18n_.getLanguage();
+        const rawLang = this.currentLanguage;
         window.lang = rawLang.startsWith('en') ? 'en' : 'fr';
         window.i18nNetwork = {
             fr: {
