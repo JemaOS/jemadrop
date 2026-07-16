@@ -472,6 +472,10 @@ x-dialog a {
     background: transparent;
 }
 
+.icon-button {
+    color: var(--text-color);
+}
+
 .button:before,
 .icon-button:before {
     content: '';

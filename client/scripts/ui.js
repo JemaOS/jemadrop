@@ -439,8 +439,8 @@ class I18n {
         this.i18n_ = domI18n({
             selector: '[data-translatable]',
             separator: ' // ',
-            languages: ['fr', 'fr-FR', 'en', 'en-US'],
-            currentLanguage: 'fr',
+            languages: ['fr', 'en'],
+            currentLanguage: navigator.language.startsWith('en') ? 'en' : 'fr',
         });
         this._showDom();
         this._createI18nStrings();
