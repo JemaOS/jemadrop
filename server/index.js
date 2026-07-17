@@ -158,14 +158,12 @@ class Peer {
     }
 
     _setIP(request) {
-        if (request.headers['x-real-ip']) {
-            this.ip = request.headers['x-real-ip'].split(/\s*,\s*/)[0];
+        let ip = request.headers['x-forwarded-for'] || request.headers['x-real-ip'];
+        if (ip) {
+            this.ip = ip.split(/\s*,\s*/)[0];
         } else {
             this.ip = request.connection.remoteAddress;
         }
-        console.log(`x-forwarded-for: ${request.headers['x-forwarded-for']}`);
-        console.log(`remoteAddress: ${request.connection.remoteAddress}`);
-        console.log(`_setIP: ${this.ip}`);
         // IPv4 and IPv6 use different values to refer to localhost
         if (this.ip == '::1' || this.ip == '::ffff:127.0.0.1') {
             this.ip = '127.0.0.1';
