@@ -727,33 +727,24 @@ x-peers:empty~x-instructions {
 }
 
 
-/* Tooltip for QR code */
+/* QR code (always visible) */
 
 .tooltip {
-    position: relative;
     color: var(--primary-color);
 }
 
-.tooltip:hover {
-    cursor: pointer;
-}
-
-.tooltip span {
+#qrcode-img {
     display: block;
     border-radius: 2px;
     background: var(--secondary-color);
-    position: fixed;
-    top: 25%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     width: 150px;
     padding: 4px;
+    margin: 16px auto 0;
     overflow: hidden;
-    z-index: 100;
 }
 
-.tooltip span img {
-    float: left;
+#qrcode-img img {
+    display: block;
     width: 100%;
 }
 

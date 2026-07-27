@@ -573,21 +573,14 @@ const i18n = new I18n();
 
 class QrCode {
     constructor() {
-        const qrCode = $$('qrcode');
-        qrCode.innerHTML += '<span><img src="images/drop.jemaos.com.png"></span>';
-        qrCode.addEventListener('mouseover', e => this._show(e));
-        qrCode.addEventListener('mouseout', e => this._hide(e));
-        const qrCodeImg = $$('qrcode span');
-        qrCodeImg.style.visibility = 'hidden';
-        this.qrCodeImg_ = qrCodeImg;
-    }
-
-    _show() {
-        this.qrCodeImg_.style.visibility = 'visible';
-    }
-
-    _hide() {
-        this.qrCodeImg_.style.visibility = 'hidden';
+        // Always display the QR code below the instructions, no hover needed.
+        // Appended to x-no-peers (not the translatable div) so language
+        // switching does not remove it.
+        const container = $$('x-no-peers');
+        const qrCodeImg = document.createElement('span');
+        qrCodeImg.id = 'qrcode-img';
+        qrCodeImg.innerHTML = '<img src="images/drop.jemaos.com.png" alt="QR code drop.jemaos.com">';
+        container.appendChild(qrCodeImg);
     }
 }
 
