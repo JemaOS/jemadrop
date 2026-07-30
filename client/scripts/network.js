@@ -38,7 +38,12 @@ class ServerConnection {
                 Events.fire('signal', msg);
                 break;
             case 'ping':
-                this.send({ type: 'pong' });
+                // Only answer when visible: a hidden/sleeping device stops
+                // ponging and gets evicted instead of lingering as a ghost
+                // device on other screens.
+                if (document.visibilityState === 'visible') {
+                    this.send({ type: 'pong' });
+                }
                 break;
             default:
                 console.error('WS: unkown message type', msg);
@@ -68,7 +73,11 @@ class ServerConnection {
         console.log('WS: server disconnected');
         Events.fire('notify-user', i18nNetwork[lang].CONNECTION_LOST_RETRY);
         clearTimeout(this._reconnectTimer);
-        this._reconnectTimer = setTimeout(_ => this._connect(), 500); // reload?
+        // Reconnect right away only when visible; hidden pages reconnect via
+        // the visibilitychange handler on return, avoiding join/leave flapping.
+        if (document.visibilityState === 'visible') {
+            this._reconnectTimer = setTimeout(_ => this._connect(), 500);
+        }
     }
 
     _onVisibilityChange() {

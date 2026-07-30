@@ -18,6 +18,8 @@ class JemaDropServer {
         console.log(peer.ip, peer.id);
         this._joinRoom(peer);
         peer.socket.on('message', message => this._onMessage(peer, message));
+        peer.socket.on('close', () => this._leaveRoom(peer));
+        peer.socket.on('error', () => this._leaveRoom(peer));
         this._keepAlive(peer);
     }
 
@@ -64,6 +66,15 @@ class JemaDropServer {
         // if room doesn't exist, create it
         if (!this._rooms[peer.ip]) {
             this._rooms[peer.ip] = {};
+        }
+
+        // A peer reconnecting with the same id makes its previous connection
+        // stale (sleeping device, crashed tab, ...). Evict it so it never
+        // appears as a ghost device to the new connection.
+        const stale = this._rooms[peer.ip][peer.id];
+        if (stale && stale !== peer) {
+            console.log('Evicting stale connection for peer', peer.id);
+            this._leaveRoom(stale);
         }
 
         // notify all other peers

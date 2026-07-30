@@ -573,10 +573,10 @@ const i18n = new I18n();
 
 class QrCode {
     constructor() {
-        // Always display the QR code below the instructions, no hover needed.
-        // Appended to x-no-peers (not the translatable div) so language
-        // switching does not remove it.
-        const container = $$('x-no-peers');
+        // Always display the QR code below the instructions, no hover needed,
+        // and even while devices are connected: use a dedicated container so
+        // it is not hidden with the (empty-state) x-no-peers block.
+        const container = document.getElementById('qr-container');
         const qrCodeImg = document.createElement('span');
         qrCodeImg.id = 'qrcode-img';
         qrCodeImg.innerHTML = '<img src="images/drop.jemaos.com.png" alt="QR code drop.jemaos.com">';
