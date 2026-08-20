@@ -1,4 +1,4 @@
-const CACHE_NAME = 'JemaDrop-v1.2.2';
+const CACHE_NAME = 'JemaDrop-v1.2.3';
 const urlsToCache = [
     '/',
     '/styles.css',

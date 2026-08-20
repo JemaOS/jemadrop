@@ -130,7 +130,8 @@ class Peer {
         });
         this._chunker = new FileChunker(file,
             chunk => this._send(chunk),
-            offset => this._onPartitionEnd(offset));
+            offset => this._onPartitionEnd(offset),
+            () => this._channel);
         this._chunker.nextPartition();
     }
 
@@ -307,6 +308,12 @@ class RTCPeer extends Peer {
         channel.onmessage = e => this._onMessage(e.data);
         channel.onclose = e => this._onChannelClosed();
         this._channel = channel;
+        // flush des chunks mis en file pendant la (re)connexion
+        if (this._sendQueue && this._sendQueue.length) {
+            const queued = this._sendQueue;
+            this._sendQueue = [];
+            for (const m of queued) channel.send(m);
+        }
     }
 
     _onChannelClosed() {
@@ -349,10 +356,17 @@ class RTCPeer extends Peer {
     }
 
     _send(message) {
-        if (!this._channel || this._channel.readyState !== 'open') {
-            return this.refresh();
+        if (this._isConnected()) {
+            this._channel.send(message);
+            return;
         }
-        this._channel.send(message);
+        // Ne JAMAIS supprimer un chunk : un drop silencieux pendant une
+        // reconnexion figeait le transfert (le digesteur n atteint jamais
+        // 100%) ou corrompait le fichier. On met en file et on flush a
+        // l ouverture du canal.
+        if (!this._sendQueue) this._sendQueue = [];
+        this._sendQueue.push(message);
+        this.refresh();
     }
 
     _sendSignal(signal) {
@@ -454,7 +468,7 @@ class WSPeer {
 }
 
 class FileChunker {
-    constructor(file, onChunk, onPartitionEnd) {
+    constructor(file, onChunk, onPartitionEnd, getChannel) {
         this._chunkSize = 64000; // 64 KB
         this._maxPartitionSize = 1e6; // 1 MB
         this._offset = 0;
@@ -462,6 +476,8 @@ class FileChunker {
         this._file = file;
         this._onChunk = onChunk;
         this._onPartitionEnd = onPartitionEnd;
+        this._getChannel = getChannel || null;
+        this._pausePoll = null;
         this._reader = new FileReader();
         this._reader.addEventListener('load', e => {
             this._onChunkRead(e.target.result);
@@ -485,6 +501,23 @@ class FileChunker {
         this._onChunk(chunk);
         if (this._isPartitionEnd() || this.isFileEnd()) {
             this._onPartitionEnd(this._offset);
+            return;
+        }
+        // Controle de flux : sans lui, la boucle remplit le buffer du
+        // DataChannel plus vite qu il ne se vide ; sur Safari/iOS le canal
+        // se ferme ou le transfert se fige. Polling de vidange, compatible
+        // avec les vieux WebKit sans evenement bufferedamountlow.
+        const channel = this._getChannel ? this._getChannel() : null;
+        if (channel && channel.bufferedAmount > FileChunker.MAX_BUFFERED) {
+            clearInterval(this._pausePoll);
+            this._pausePoll = setInterval(() => {
+                if (channel.readyState !== 'open' ||
+                    channel.bufferedAmount <= FileChunker.LOW_WATERMARK) {
+                    clearInterval(this._pausePoll);
+                    this._pausePoll = null;
+                    if (channel.readyState === 'open') this._readChunk();
+                }
+            }, 100);
             return;
         }
         this._readChunk();
@@ -544,6 +577,11 @@ class Events {
         return window.addEventListener(type, callback, false);
     }
 }
+
+// Controle de flux DataChannel (voir FileChunker._onChunkRead) :
+// au-dela de 4 Mio en attente on pause, reprise sous 512 Kio.
+FileChunker.MAX_BUFFERED = 4 * 1024 * 1024;
+FileChunker.LOW_WATERMARK = 512 * 1024;
 
 RTCPeer.config = {
     'iceServers': [

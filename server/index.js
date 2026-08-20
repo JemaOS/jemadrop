@@ -30,7 +30,7 @@ class JemaDropServer {
     }
 
     _onError(error) {
-        console.log(erorr);
+        console.error('WebSocket server error:', error);
     }
 
     _onMessage(sender, message) {
@@ -123,7 +123,9 @@ class JemaDropServer {
 
     _send(peer, message) {
         if (!peer) return console.error('undefined peer');
-        if (this._wss.readyState !== this._wss.OPEN) return console.error('Socket is closed');
+        // Verifier le socket du PEER (pas le serveur) : envoyer sur un socket
+        // en cours de fermeture genere des erreurs en cascade.
+        if (peer.socket.readyState !== 1) return; // 1 = ws OPEN
         message = JSON.stringify(message);
         peer.socket.send(message, error => error ? console.log(error): '');
     }
@@ -184,9 +186,15 @@ class Peer {
     _setPeerId(request) {
         if (request.peerId) {
             this.id = request.peerId;
-        } else {
-            this.id = request.headers.cookie.replace('peerid=', '');
+            return;
         }
+        // Parse robuste : un header sans cookie (1ere visite, navigation
+        // privee, iOS) faisait planter le serveur (TypeError) ; un header
+        // multi-cookies produisait un ID corrompu ("peerid=X; other=Y" ->
+        // "X; other=Y") -> appareils fantomes et doublons dans les rooms.
+        const cookie = request.headers.cookie || '';
+        const match = cookie.match(/(?:^|;\s*)peerid=([^;]+)/);
+        this.id = match ? match[1] : Peer.uuid();
     }
 
     toString() {
