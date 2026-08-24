@@ -428,6 +428,14 @@ x-dialog a {
 
 /* Receive Dialog */
 
+#receiveDialog #fileName {
+    /* Les noms de fichiers longs (captures Android, etc.) n'ont pas
+       d'espace sur lequel couper : forcer la césure pour ne jamais
+       déborder de la boîte de dialogue. */
+    overflow-wrap: anywhere;
+    word-break: break-all;
+}
+
 #receiveTextDialog #text {
     width: 100%;
     word-break: break-all;
