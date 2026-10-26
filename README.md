@@ -1,66 +1,109 @@
-# JemaDrop
+<div align="center">
 
-JemaDrop enables file transfering in the same network. It is a fork of [Snapdrop](https://github.com/RobinLinus/snapdrop).
+<h1>JemaDrop</h1>
 
-JemaDrop is built with:
-* Vanilla HTML5 / ES6 / CSS3
-* Progressive Web App
-* [WebRTC](http://webrtc.org/)
-* [WebSockets](http://www.websocket.org/) fallback
-* [NodeJS](https://nodejs.org/en/)
-* [Material Design](https://material.google.com/)
+### Instant, peer-to-peer file sharing on your local network — no cloud, no upload
 
-## Introduction
+[![Made by Jema Technology](https://img.shields.io/badge/Made%20by-Jema%20Technology-8286ef)](https://www.jematechnology.fr)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
+[![WebRTC](https://img.shields.io/badge/WebRTC-P2P-333333?logo=webrtc&logoColor=white)](https://webrtc.org)
+[![WebSockets](https://img.shields.io/badge/WebSockets-signaling-010101?logo=socketdotio&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API)
+[![PWA](https://img.shields.io/badge/PWA-Installable-8286ef)](#)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#-contributing)
 
-JemaDrop uses a P2P connection if WebRTC is supported by the browser. WebRTC needs a signaling serve, but it is only used to establish a connection and is not involved in the file transfer.
+**Scan a QR code · send files device-to-device · files never touch a server**
 
-None of files are ever sent to any server. Files are sent only between peers.
+[Features](#-features) · [Screenshots](#-screenshots) · [Getting started](#-getting-started) · [How it works](#-how-it-works) · [License](#-license)
 
-Peers sharing the same public IP will enter the same *room* to transfer files. That makes the transfer only work in the same network.
+</div>
 
-## Development
+![JemaDrop — send files](screenshots/main.png)
 
-### STUN
+---
 
-As a signaling server is required to get the peer's public IP to establish P2P connection, JemaDrop is connecting to a STUN deployed with [STUNTMAN](http://www.stunprotocol.org/). Before that [coturn](https://github.com/coturn/coturn) is used instead which acts as both STUN and TURN server. We do not want relaying as a fallback when P2P connection is unavailable, so STUNTMAN is enough for JemaDrop.
+## ✨ Features
 
-### Frontend
+- 📱 **Same-network transfer** — peers on the same public IP form a room
+- 🔐 **Direct P2P** — files travel only between devices (WebRTC); the server is used for signaling only
+- 🧭 **QR code** — scan to open JemaDrop on another device instantly
+- 🖱️ **Drag & drop** — no size limits imposed by an upload server
+- 🌗 **Light / dark** theme
+- 🌍 **Multi-language** UI
+- 📶 **Installable PWA**
+- 🧱 **Self-hostable** with Docker
+
+> JemaDrop is a fork of [Snapdrop](https://github.com/RobinLinus/snapdrop), adapted for JemaOS.
+
+---
+
+## 📸 Screenshots
+
+| Light | Dark |
+| :---: | :---: |
+| <img src="screenshots/main.png" alt="JemaDrop — light" /> | <img src="screenshots/main-dark.png" alt="JemaDrop — dark" /> |
+
+---
+
+## 🚀 Getting started
+
+### Docker (recommended)
 
 ```bash
+git clone https://github.com/JemaOS/jemadrop.git
+cd jemadrop
 docker-compose up
+# open http://localhost:6080
 ```
 
-Now visit http://localhost:6080 in your browser.
-    
-### Nginx
-
-The client expects the server at http(s)://your.domain/server.
-
-When serving the node server behind a proxy the "X-Forwarded-For" header has to be set by the proxy. Otherwise all clients that are served by the proxy will be mutually visible.
-
-By default the server listens on port 6000.
-
-For the nginx configuration, see nginx/default.conf.
-
-## Deployment
-
-Check docker.sh for more commands.
+### Production
 
 ```bash
 ./docker.sh start
 ```
 
-### Caveat
+The client talks to the signaling server at `/server` (Node + `ws`, default port **6000**). Behind a reverse proxy, set `X-Forwarded-For` so peers are grouped correctly (see `nginx/default.conf`).
 
-Since JemaDrop is [PWA](https://en.wikipedia.org/wiki/Progressive_web_application), the service worker will cache website resources in local. To deliver the update to users in time, there are 2 lines should been modified in every release.
+---
 
-### service-worker.js
+## 🏗 How it works
 
-Bump the version in `CACHE_NAME`.
+```
+Browser  ⇄  /server (WebSocket signaling)  ⇄  Browser
+   └──────────── direct WebRTC / P2P ────────────┘
+```
 
-### index.html
+- **WebRTC** is used when available; **WebSockets** act as a fallback transport.
+- The signaling server only introduces peers; it never sees file contents.
+- Peers sharing the same public IP land in the same *room*, so transfers stay on your network.
 
-Bump the version in CSS and JS resource URL, e.g.
+### Repository layout
 
-- Bump the version in `<link rel="stylesheet" href="styles.css?version">` to force the browser to fetch CSS.
-- Bump the version in `<script src="scripts/ui.js?version"></script>` to force the browser to fetch JS.
+```
+client/            # static PWA (HTML/CSS/JS)
+server/            # Node signaling server (ws)
+nginx/             # reverse-proxy config
+docker-compose.yml # client + server + nginx
+docker.sh          # helper scripts
+```
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Fork, branch, and open a pull request.
+
+```bash
+git checkout -b feat/my-feature
+git commit -m "feat: my feature"
+git push origin feat/my-feature
+```
+
+---
+
+## 📄 License
+
+Released under the **GNU GPL-3.0** — see [LICENSE](LICENSE).
+
+<div align="center">
+Made with ❤️ by <a href="https://www.jematechnology.fr">Jema Technology</a>
+</div>
