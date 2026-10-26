@@ -15,6 +15,10 @@
 
 [Features](#-features) · [Screenshots](#-screenshots) · [Getting started](#-getting-started) · [How it works](#-how-it-works) · [License](#-license)
 
+<br>
+
+<sub>**Keywords:** file sharing · peer-to-peer · P2P · local network transfer · LAN file transfer · AirDrop alternative · Snapdrop · WebRTC · WebSockets signaling · QR code · drag and drop · no cloud · no upload · device to device · self-hosted · Docker · installable PWA</sub>
+
 </div>
 
 ![JemaDrop — send files](screenshots/main.png)

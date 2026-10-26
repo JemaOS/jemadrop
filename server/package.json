@@ -1,7 +1,21 @@
 {
   "name": "jemadrop",
   "version": "1.0.0",
-  "description": "",
+  "description": "Instant, peer-to-peer file sharing on your local network — WebRTC transfer with WebSocket signaling, no cloud, no upload.",
+  "keywords": [
+    "file-sharing",
+    "peer-to-peer",
+    "p2p",
+    "local-network",
+    "lan-transfer",
+    "airdrop-alternative",
+    "snapdrop",
+    "webrtc",
+    "websockets",
+    "self-hosted",
+    "docker",
+    "pwa"
+  ],
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
