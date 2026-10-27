@@ -46,6 +46,12 @@
 | :---: | :---: |
 | <img src="screenshots/main.png" alt="JemaDrop — light" /> | <img src="screenshots/main-dark.png" alt="JemaDrop — dark" /> |
 
+### 📱 Mobile
+
+| Dark | Light |
+| :---: | :---: |
+| <img src="screenshots/mobile-dark.png" alt="JemaDrop — mobile, dark" width="300" /> | <img src="screenshots/mobile-light.png" alt="JemaDrop — mobile, light" width="300" /> |
+
 ---
 
 ## 🚀 Getting started
